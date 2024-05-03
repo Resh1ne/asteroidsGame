@@ -9,7 +9,7 @@ class Ship(Subject):
     def __init__(self, app, name, loc, radius, color):
         super(Ship, self).__init__(app, name, loc, radius, color)
         self.points_obj = OBJECT_POINTS['Player']['Ship-1']
-        self.health = 10
+        self.health = 3
 
         self.bullets = []
         self.bullet_speed = 0.5
@@ -25,7 +25,6 @@ class Ship(Subject):
             else:
                 for element in self.app.main_group:
                     if element.name != self.name and bullet.collision_check(element):
-                        print("collision")
                         element.destroy()
                         bullets_to_remove.append(bullet)
                         break
@@ -43,7 +42,6 @@ class Ship(Subject):
             if element.name != self.name:
                 if self.collision_check(element):
                     if (pygame.time.get_ticks() - self.start_time) / 1000 > 1.5:
-                        print("collision")
                         self.start_time = pygame.time.get_ticks()
                         self.health -= 1
                         element.destroy()
@@ -68,6 +66,18 @@ class Ship(Subject):
         for bullet in self.bullets:
             bullet.update(dt)
         self.destroy_bullet()
+        self.keep_within_screen_bounds()
+
+    def keep_within_screen_bounds(self):
+        if self.location.x < 0:
+            self.location.x = 0
+        elif self.location.x > WIDTH:
+            self.location.x = WIDTH
+
+        if self.location.y < 0:
+            self.location.y = 0
+        elif self.location.y > HEIGHT:
+            self.location.y = HEIGHT
 
     def render_health(self, surface):
         for i in range(1, self.health + 1):
@@ -81,6 +91,5 @@ class Ship(Subject):
         pygame.draw.lines(surface, self.color, True,
                           self.points(self.radius, self.points_obj, self.rotation_angle, self.location.xy),
                           self.line_width)
-        pygame.draw.circle(surface, RED, self.location.xy, self.collision_dist, self.line_width)
         for bullet in self.bullets:
             bullet.draw(surface)

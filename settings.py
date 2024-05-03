@@ -1,6 +1,6 @@
 SCREEN_TITLE = "Asteroids"
-WIDTH = 512
-HEIGHT = 512
+WIDTH = 700
+HEIGHT = 700
 FPS = 60
 ALPHA = 60
 ####################

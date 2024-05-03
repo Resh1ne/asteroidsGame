@@ -21,7 +21,7 @@ class Subject(object):
 
         self.collision_dist = self.radius/1.2
 
-        self.max_speed = 3.5
+        self.max_speed = 2.5
         self.movement_speed = 0.05
         self.rotation_speed = 0.18
         self.rotation_angle = 0.0
