@@ -17,16 +17,20 @@ class Ship(Subject):
         self.start_time = pygame.time.get_ticks()
 
     def destroy_bullet(self):
+        bullets_to_remove = []
         for bullet in self.bullets:
             if bullet.location.x < 0 or bullet.location.x > WIDTH or \
                     bullet.location.y < 0 or bullet.location.y > HEIGHT:
-                self.bullets.remove(bullet)
-            for element in self.app.main_group:
-                if element.name != self.name:
-                    if bullet.collision_check(element):
+                bullets_to_remove.append(bullet)
+            else:
+                for element in self.app.main_group:
+                    if element.name != self.name and bullet.collision_check(element):
                         print("collision")
                         element.destroy()
-                        self.bullets.remove(bullet)
+                        bullets_to_remove.append(bullet)
+                        break
+        for bullet in bullets_to_remove:
+            self.bullets.remove(bullet)
 
     def shoot(self):
         bullet_direction = self.direction.normalize()  # Направление пули - направление корабля

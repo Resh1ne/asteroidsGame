@@ -21,7 +21,7 @@ class Asteroid(Subject):
         # self.velocity.y += (self.direction.y / 2) * (self.get_speed(dt) / 2)
 
         self.movement()
-        if self.location.y > HEIGHT:
+        if self.location.y > HEIGHT or self.location.x > WIDTH:
             self.app.main_group.remove(self)
 
     def destroy(self):

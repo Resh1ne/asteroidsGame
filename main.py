@@ -35,38 +35,27 @@ class Game(object):
 
         self.player = Ship(self, "player", (WIDTH // 2, HEIGHT // 2), 16, WHITE)
         self.main_group.append(self.player)
+
         for i in range(self.max_asteroids):
+            # Создание астероида за пределами экрана с рандомной координатой X
             random_x = random.randint(0, WIDTH)
-            random_y = random.randint(0, HEIGHT)
-            self.main_group.append(
-                Asteroid(self, f"asteroid_{i}", (random_x, random_y), 32, WHITE)
-            )
-        # for i in range(10):
-        #     # Создание астероида за пределами экрана с рандомной координатой X
-        #     random_x = random.randint(0, WIDTH)
-        #     asteroid = Asteroid(self, f"asteroid_{i}", (random_x, -50), 32, WHITE)
-        #     # Задаем начальную скорость и направление движения астероида
-        #     asteroid.velocity = Vector2D(0, 3)  # Скорость 3 пикселя вниз
-        #     asteroid.direction = Vector2D(0, 1)  # Направление движения вниз
-        #     self.main_group.append(asteroid)
+            asteroid = Asteroid(self, f"asteroid_{i}", (random_x, -50), 32, WHITE)
+            # Задаем начальную скорость и направление движения астероида
+            asteroid.velocity = Vector2D(0, 3)  # Скорость 3 пикселя вниз
+            asteroid.direction = Vector2D(0, 1)  # Направление движения вниз
+            self.main_group.append(asteroid)
 
     def update(self):
         self.delta_time = self.clock.tick(FPS)
         for obj in self.main_group:
             obj.update(self.delta_time)
-            # Если астероидов не максимально количество, то добавляем до максимального
+        # Если астероидов не максимально количество, то добавляем до максимального
         if sum(isinstance(obj, Asteroid) for obj in self.main_group) < self.max_asteroids:
             random_x = random.randint(0, WIDTH)
-            random_y = random.randint(0, HEIGHT)
-            self.main_group.append(
-                Asteroid(self, f"asteroid_{len(self.main_group)}", (random_x, random_y), 32, WHITE)
-            )
-        # if sum(isinstance(obj, Asteroid) for obj in self.main_group) < self.max_asteroids:
-        #     random_x = random.randint(0, WIDTH)
-        #     asteroid = Asteroid(self, f"asteroid_{len(self.main_group)}", (random_x, -50), 32, WHITE)
-        #     asteroid.velocity = Vector2D(0, 3)
-        #     asteroid.direction = Vector2D(0, 1)
-        #     self.main_group.append(asteroid)
+            asteroid = Asteroid(self, f"asteroid_{len(self.main_group)}", (random_x, -50), 32, WHITE)
+            asteroid.velocity = Vector2D(0, 3)
+            asteroid.direction = Vector2D(0, 1)
+            self.main_group.append(asteroid)
 
     def draw(self):
         self.screen.blit(self.srf_overlay, (0, 0))
