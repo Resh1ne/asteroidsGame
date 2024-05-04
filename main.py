@@ -11,6 +11,14 @@ from vector import Vector2D
 
 
 class Game(object):
+    records = [
+        ("Player 1", 500),
+        ("Player 2", 300),
+        ("Player 3", 700),
+        ("Player 4", 400),
+        ("Player 5", 900)
+    ]
+
     def __init__(self):
         pygame.init()
         pygame.display.set_caption(SCREEN_TITLE)
@@ -37,7 +45,7 @@ class Game(object):
         self.delta_time = 0.01
         self.time = 0
 
-        self.menu = Menu(self.screen)
+        self.menu = Menu(self.screen, self)
         self.on_init()
 
     def on_init(self):
@@ -140,9 +148,67 @@ class Game(object):
                 self.event_handler()
                 self.update()
                 self.draw()
+
+                if self.is_game_over:
+                    if self.check_high_score():
+                        self.show_high_score_dialog()
+                        self.restart_game()
         else:
             pygame.quit()
             sys.exit()
+
+    def check_high_score(self):
+        for record in Game.records:
+            if self.score >= record[1]:
+                return True
+        return False
+
+    def save_high_score(self, name):
+        # Проходим по каждой записи в таблице рекордов
+        for i, record in enumerate(Game.records):
+            # Если текущий результат больше или равен результату в текущей записи
+            if self.score >= record[1]:
+                # Вставляем новую запись перед текущей записью
+                Game.records.insert(i, (name, self.score))
+                # Удаляем последнюю запись, если таблица переполнена
+                if len(Game.records) > 5:
+                    Game.records.pop()
+                return
+        # # Если текущий результат не превышает ни одного рекорда, добавляем его в конец таблицы
+        # self.menu.records.append((name, self.score))
+
+    def show_high_score_dialog(self):
+        # Показать диалоговое окно с поздравлением
+        # self.menu.is_visible = True
+        # self.menu.selected_item = 1  # Выбрать "Table of Records"
+        # self.menu.draw()
+        # pygame.display.flip()
+        name = ""
+        input_active = True
+        while input_active:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        input_active = False
+                    elif event.key == pygame.K_BACKSPACE:
+                        name = name[:-1]
+                    elif event.key == pygame.K_ESCAPE:
+                        return
+                    else:
+                        name += event.unicode
+            self.screen.fill((0, 0, 0))
+            font = pygame.font.SysFont("Arial", 36)
+            text = font.render(f"Congratulations! You've got a high score of {self.score}!", True, (255, 255, 255))
+            text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
+            self.screen.blit(text, text_rect)
+            text = font.render("Enter your name:", True, (255, 255, 255))
+            text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 50))
+            self.screen.blit(text, text_rect)
+            text = font.render(name, True, (255, 255, 255))
+            text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + 100))
+            self.screen.blit(text, text_rect)
+            pygame.display.flip()
+        self.save_high_score(name)
 
 
 if __name__ == "__main__":

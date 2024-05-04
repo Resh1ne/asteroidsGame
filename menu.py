@@ -7,12 +7,21 @@ from settings import *
 
 
 class Menu:
-    def __init__(self, screen):
+    def __init__(self, screen, app):
         self.screen = screen
+        self.app = app
         self.font = pygame.font.SysFont("Arial", 36)
         self.menu_items = ["Start Game", "Table of Records", "Help", "Quit"]
         self.selected_item = 0
         self.is_visible = True
+
+        # self.records = [
+        #     ("Player 1", 500),
+        #     ("Player 2", 300),
+        #     ("Player 3", 700),
+        #     ("Player 4", 400),
+        #     ("Player 5", 900)
+        # ]
 
     def draw(self):
         if self.is_visible:
@@ -30,8 +39,9 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                     records_shown = False
-            for i in range(1, 6):
-                text = self.font.render(f"Record {i}: {random.randint(100, 1000)}", True, (255, 255, 255))
+            self.app.records.sort(key=lambda x: x[1], reverse=True)
+            for i, (name, score) in enumerate(self.app.records, start=1):
+                text = self.font.render(f"{name}: {score}", True, (255, 255, 255))
                 text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 + i * 50))
                 self.screen.blit(text, text_rect)
             pygame.display.flip()
