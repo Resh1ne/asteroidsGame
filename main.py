@@ -25,6 +25,11 @@ class Game(object):
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.clock = pygame.time.Clock()
 
+        pygame.mixer.init()
+        menu_sound = pygame.mixer.Sound("changed_cursor_position.mp3")
+        click_menu_sound = pygame.mixer.Sound("pop-up-text-notification.mp3")
+        pygame.mixer.music.load("background-music.mp3")
+
         self.srf_overlay = None
         self.main_group = None
         self.asteroids = None
