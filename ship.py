@@ -26,6 +26,7 @@ class Ship(Subject):
                 for element in self.app.main_group:
                     if element.name != self.name and bullet.collision_check(element):
                         element.destroy()
+                        self.app.increase_score(100)
                         bullets_to_remove.append(bullet)
                         break
         for bullet in bullets_to_remove:

@@ -23,6 +23,8 @@ class Game(object):
         self.player = None
         self.asteroid = None
 
+        self.score = 0
+
         self.max_asteroids = 7
         self.asteroid_increase_interval = 10000
         self.last_asteroid_increase_time = pygame.time.get_ticks()
@@ -87,10 +89,19 @@ class Game(object):
             self.is_game_over = True
 
     def draw_game_over_message(self):
-        game_over_text = self.game_over_font.render("Game Over", True, (255, 0, 0))
+        game_over_text = self.game_over_font.render("Game Over", True, RED)
         text_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         self.screen.blit(game_over_text, text_rect)
         pygame.display.flip()
+
+    def increase_score(self, points):
+        self.score += points
+
+    def draw_score(self):
+        font = pygame.font.SysFont("Arial", 24)
+        score_text = font.render(f"Score: {self.score}", True, WHITE)
+        text_rect = score_text.get_rect(topright=(WIDTH - 10, 10))
+        self.screen.blit(score_text, text_rect)
 
     def restart_game(self):
         self.is_game_over = False
@@ -103,7 +114,7 @@ class Game(object):
         # draw the game object
         for obj in self.main_group:
             obj.draw(self.screen)
-
+        self.draw_score()
         if self.is_game_over:
             self.draw_game_over_message()
 
