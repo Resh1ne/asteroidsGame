@@ -1,4 +1,3 @@
-import random
 import sys
 
 import pygame
@@ -14,14 +13,6 @@ class Menu:
         self.menu_items = ["Start Game", "Table of Records", "Help", "Quit"]
         self.selected_item = 0
         self.is_visible = True
-
-        # self.records = [
-        #     ("Player 1", 500),
-        #     ("Player 2", 300),
-        #     ("Player 3", 700),
-        #     ("Player 4", 400),
-        #     ("Player 5", 900)
-        # ]
 
     def draw(self):
         if self.is_visible:
