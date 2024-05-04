@@ -1,8 +1,10 @@
-import sys
 import random
+import sys
+
 import pygame
 
 from asteroid import Asteroid
+from menu import Menu
 from settings import *
 from ship import Ship
 from vector import Vector2D
@@ -26,12 +28,14 @@ class Game(object):
         self.last_asteroid_increase_time = pygame.time.get_ticks()
 
         self.game_over_font = pygame.font.SysFont("Arial", 64)
+        self.game_over_drawn = False
         self.is_game_over = False
 
         self.is_running = True
         self.delta_time = 0.01
         self.time = 0
 
+        self.menu = Menu(self.screen)
         self.on_init()
 
     def on_init(self):
@@ -86,23 +90,24 @@ class Game(object):
         game_over_text = self.game_over_font.render("Game Over", True, (255, 0, 0))
         text_rect = game_over_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
         self.screen.blit(game_over_text, text_rect)
+        pygame.display.flip()
 
     def restart_game(self):
         self.is_game_over = False
         self.__init__()
 
     def draw(self):
-        self.screen.blit(self.srf_overlay, (0, 0))
+        # self.screen.blit(self.srf_overlay, (0, 0))
+        self.screen.fill((0, 0, 0))
 
         # draw the game object
         for obj in self.main_group:
             obj.draw(self.screen)
 
-        pygame.display.flip()
-
         if self.is_game_over:
             self.draw_game_over_message()
-            pygame.display.flip()
+
+        pygame.display.flip()
 
     def event_handler(self):
         for event in pygame.event.get():
@@ -116,9 +121,14 @@ class Game(object):
 
     def run(self):
         while self.is_running:
-            self.event_handler()
-            self.update()
-            self.draw()
+            if self.menu.is_visible:
+                self.menu.draw()
+                pygame.display.flip()
+                self.menu.handle_events(pygame.event.poll())
+            else:
+                self.event_handler()
+                self.update()
+                self.draw()
         else:
             pygame.quit()
             sys.exit()
