@@ -62,15 +62,21 @@ class Menu:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     self.selected_item = (self.selected_item - 1) % len(self.menu_items)
+                    self.app.menu_sound.play()
                 elif event.key == pygame.K_DOWN:
                     self.selected_item = (self.selected_item + 1) % len(self.menu_items)
+                    self.app.menu_sound.play()
                 elif event.key == pygame.K_RETURN:
                     if self.selected_item == 0:  # Start Game
+                        self.app.click_menu_sound.play()
                         self.is_visible = False
                     elif self.selected_item == 1:  # Table
+                        self.app.click_menu_sound.play()
                         self.draw_records()
                     elif self.selected_item == 2:  # Helper
+                        self.app.click_menu_sound.play()
                         self.draw_help()
                     elif self.selected_item == 3:  # Quit
+                        self.app.click_menu_sound.play()
                         pygame.quit()
                         sys.exit()

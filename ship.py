@@ -1,5 +1,6 @@
 import pygame
 
+from animation import DestructionAnimation
 from bullet import Bullet
 from settings import *
 from subject import Subject
@@ -24,7 +25,10 @@ class Ship(Subject):
                 bullets_to_remove.append(bullet)
             else:
                 for element in self.app.main_group:
-                    if element.name != self.name and bullet.collision_check(element):
+                    if element.name != self.name and not isinstance(element,
+                                                                    DestructionAnimation) and bullet.collision_check(
+                            element):
+                        self.app.hit.play()
                         element.destroy()
                         self.app.increase_score(100)
                         bullets_to_remove.append(bullet)
@@ -33,16 +37,17 @@ class Ship(Subject):
             self.bullets.remove(bullet)
 
     def shoot(self):
-        bullet_direction = self.direction.normalize()  # Направление пули - направление корабля
-        bullet_position = self.location + bullet_direction * self.radius  # Позиция пули - нос корабля
-        # Создание экземпляра пули и добавление его в список пуль
+        self.app.shoot.play()
+        bullet_direction = self.direction.normalize()
+        bullet_position = self.location + bullet_direction * self.radius
         self.bullets.append(Bullet(self.app, bullet_position.xy, bullet_direction, self.bullet_speed))
 
     def collision(self):
         for element in self.app.main_group:
-            if element.name != self.name:
+            if element.name != self.name and not isinstance(element, DestructionAnimation):
                 if self.collision_check(element):
-                    if (pygame.time.get_ticks() - self.start_time) / 1000 > 1.5:
+                    if (pygame.time.get_ticks() - self.start_time) / 1000 > 1.0:
+                        self.app.fail.play()
                         self.start_time = pygame.time.get_ticks()
                         self.health -= 1
                         element.destroy()

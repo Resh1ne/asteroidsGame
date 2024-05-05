@@ -21,9 +21,7 @@ class Bullet(object):
             return True
 
     def update(self, dt):
-        # Обновление позиции пули
         self.location += self.direction * self.speed * dt
 
     def draw(self, surface):
-        # Отрисовка пули
         pygame.draw.circle(surface, self.color, (int(self.location.x), int(self.location.y)), self.radius)

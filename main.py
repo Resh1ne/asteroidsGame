@@ -26,9 +26,18 @@ class Game(object):
         self.clock = pygame.time.Clock()
 
         pygame.mixer.init()
-        menu_sound = pygame.mixer.Sound("changed_cursor_position.mp3")
-        click_menu_sound = pygame.mixer.Sound("pop-up-text-notification.mp3")
+        self.menu_sound = pygame.mixer.Sound("changed_cursor_position.mp3")
+        self.click_menu_sound = pygame.mixer.Sound("pop-up-text-notification.mp3")
+        self.hit = pygame.mixer.Sound("hit.mp3")
+        self.shoot = pygame.mixer.Sound("shoot.mp3")
+        self.fail = pygame.mixer.Sound("fail.mp3")
         pygame.mixer.music.load("background-music.mp3")
+        pygame.mixer.music.play(-1)
+        pygame.mixer.music.set_volume(0.1)
+
+        self.destroy_image = pygame.image.load("destroy_object.png")
+        white_mask = pygame.mask.from_surface(self.destroy_image)
+        self.destroy_image = white_mask.to_surface()
 
         self.srf_overlay = None
         self.main_group = None
@@ -121,7 +130,6 @@ class Game(object):
         self.__init__()
 
     def draw(self):
-        # self.screen.blit(self.srf_overlay, (0, 0))
         self.screen.fill((0, 0, 0))
 
         # draw the game object
@@ -159,6 +167,7 @@ class Game(object):
                         self.show_high_score_dialog()
                         self.restart_game()
         else:
+            pygame.mixer.quit()
             pygame.quit()
             sys.exit()
 
@@ -169,25 +178,14 @@ class Game(object):
         return False
 
     def save_high_score(self, name):
-        # Проходим по каждой записи в таблице рекордов
         for i, record in enumerate(Game.records):
-            # Если текущий результат больше или равен результату в текущей записи
             if self.score >= record[1]:
-                # Вставляем новую запись перед текущей записью
                 Game.records.insert(i, (name, self.score))
-                # Удаляем последнюю запись, если таблица переполнена
                 if len(Game.records) > 5:
                     Game.records.pop()
                 return
-        # # Если текущий результат не превышает ни одного рекорда, добавляем его в конец таблицы
-        # self.menu.records.append((name, self.score))
 
     def show_high_score_dialog(self):
-        # Показать диалоговое окно с поздравлением
-        # self.menu.is_visible = True
-        # self.menu.selected_item = 1  # Выбрать "Table of Records"
-        # self.menu.draw()
-        # pygame.display.flip()
         name = ""
         input_active = True
         while input_active:
@@ -203,7 +201,7 @@ class Game(object):
                         name += event.unicode
             self.screen.fill((0, 0, 0))
             font = pygame.font.SysFont("Arial", 36)
-            text = font.render(f"Congratulations! You've got a high score of {self.score}!", True, (255, 255, 255))
+            text = font.render(f"You've got a high score of {self.score}!", True, (255, 255, 255))
             text_rect = text.get_rect(center=(WIDTH // 2, HEIGHT // 2 - 50))
             self.screen.blit(text, text_rect)
             text = font.render("Enter your name:", True, (255, 255, 255))

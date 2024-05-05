@@ -2,6 +2,7 @@ import pygame
 
 from settings import *
 from subject import Subject
+from animation import DestructionAnimation
 
 
 class Asteroid(Subject):
@@ -31,6 +32,9 @@ class Asteroid(Subject):
     def destroy(self):
         if self in self.app.main_group:
             self.app.main_group.remove(self)
+
+            destruction_animation = DestructionAnimation(self.app, self.app.destroy_image, self.location.xy)
+            self.app.main_group.append(destruction_animation)
 
     def draw(self, surface):
         pygame.draw.lines(surface, self.color, True,
